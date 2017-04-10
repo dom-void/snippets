@@ -1,2 +1,2 @@
 # snippets
-my snippets and cheatsheets
+my snippets, cheatsheets and notes

@@ -31,10 +31,10 @@ for (const tr of rows) {
 
 let csv = 'domain,cena,potem\n';
 
-for (const row of data) {
+for (const row of results) {
   let line = '';
-  for (const col of row) {
-    line = line + '"' + col + '"' + ',';
+  for (let i = 0; i < row.length; i++) {
+    line = line + '"' + row[i] + '"' + (i < 2 ? ',' : '');
   }
   csv = csv + line + '\n';
 }

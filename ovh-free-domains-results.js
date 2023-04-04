@@ -1,3 +1,7 @@
+let button = document.querySelector('button[class="oui-button oui-button_icon-right  oui-button_link"]');
+
+button.click();
+
 const container = document.querySelector('div[class="col-md-6 col-lg-12 col-xl-6"]');
 
 const rows = container.querySelectorAll('tr');

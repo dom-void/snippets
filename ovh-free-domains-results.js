@@ -33,8 +33,8 @@ let csv = 'domain,cena,potem\n';
 
 for (const row of results) {
   let line = '';
-  for (let i = 0; i < row.length; i++) {
-    line = line + '"' + row[i] + '"' + (i < 2 ? ',' : '');
+  for (const [i, col] of row.entries()) {
+    line = line + '"' + col + '"' + (i < 2 ? ',' : '');
   }
   csv = csv + line + '\n';
 }

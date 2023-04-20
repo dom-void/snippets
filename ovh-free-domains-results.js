@@ -1,8 +1,9 @@
 // Enter the page: https://www.ovh.pl/order/webcloud/?#/webCloud/domain
 // Copy the code below and paste it in the browser's console.
-// Run the code by typing in the console: let csv = await getCsvContent('domain_name.com')
+// Run the code by typing in the console: let csv = await getCsvContent('test.com')
 
 const getCsvContent = (domain) => {
+  //TODO: Sometimes it catches two buttons – find the first of them
   const domainFieldQuery = 'textarea[class^="bar-field__input"]';
   const searchButtonQuery = 'button[class="oui-button oui-button_l oui-button_primary"]';
   const showMoreQuery = 'button[class="oui-button oui-button_icon-right  oui-button_link"]';
@@ -19,12 +20,19 @@ const getCsvContent = (domain) => {
 
   const selectNode = (query) => document.querySelector(query);
 
-  const setDomainQuery = (domain) => {
+  const setDomainQuery = async (domain) => {
     let domainField = selectNode(domainFieldQuery);
     let searchButton = selectNode(searchButtonQuery);
 
+    const delayed = (clbck) => new Promise((res, rej) => setTimeout(() => {
+      clbck();
+      res();
+    }, 10));
+
     domainField.value = domain;
-    searchButton.click();
+    // A delay is needed to make dispatchEvent properly work
+    await delayed(() => domainField.dispatchEvent(new Event('change')));
+    await delayed(() => searchButton.click());
   };
 
   const clicking = () => new Promise((res, rej) => {
@@ -99,7 +107,7 @@ const getCsvContent = (domain) => {
   };
 
   return new Promise(async (res, rej) => {
-    setDomainQuery(domain);
+    await setDomainQuery(domain);
     const clickingFinished = await clicking();
     let csv = getAllResults();
     if (clickingFinished && csv) {

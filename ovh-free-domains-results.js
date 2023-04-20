@@ -1,3 +1,4 @@
+
 let clicks = {
 	successfull: 0,
 	unsuccessfull: 0,
@@ -7,27 +8,32 @@ let prevShowMore;
 let nextShowMore;
 // let spinner = null;
 const showMore = () => document.querySelector('button[class="oui-button oui-button_icon-right  oui-button_link"]');
-const clickButton = () => {
-	spinner = null;
-	setTimeout(() => {
-		nextShowMore = showMore();
-		// spinner = document.querySelector('[class="ooui-spinner oui-spinner_m"]');
-		if (nextShowMore) {
-			if (clicked && prevShowMore === nextShowMore) {
-				return;
+const clicking = () => new Promise((resolve, reject) => {
+	const clickButton = () => {
+		spinner = null;
+		setTimeout(() => {
+			nextShowMore = showMore();
+			// spinner = document.querySelector('[class="ooui-spinner oui-spinner_m"]');
+			if (nextShowMore) {
+				if (clicked && prevShowMore === nextShowMore) {
+					console.log('%cfinished', 'background:magenta;color:white');
+					resolve();
+					return;
+				}
+				prevShowMore = showMore();
+				prevShowMore.click();
+				clicks.successfull++;
+				clicked = true;
+				clickButton();
+			} else {
+				clicks.unsuccessfull++;
+				clicked = false;
+				clickButton();
 			}
-			prevShowMore = showMore();
-			prevShowMore.click();
-			clicks.successfull++;
-			clicked = true;
-			clickButton();
-		} else {
-			clicks.unsuccessfull++;
-			clicked = false;
-			clickButton();
-		}
-	}, 1000);
-}
+		}, 1000);
+	};
+	clickButton();
+});
 
 const container = document.querySelector('div[class="col-md-6 col-lg-12 col-xl-6"]');
 

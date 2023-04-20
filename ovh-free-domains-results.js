@@ -3,9 +3,9 @@
 // Run the code by typing in the console: let csv = await getCsvContent('test.com')
 
 const getCsvContent = (domain) => {
-  //TODO: Sometimes it catches two buttons – find the first of them
   const domainFieldQuery = 'textarea[class^="bar-field__input"]';
   const searchButtonQuery = 'button[class="oui-button oui-button_l oui-button_primary"]';
+  //TODO: Sometimes it catches two buttons – find the first of them
   const showMoreQuery = 'button[class="oui-button oui-button_icon-right  oui-button_link"]';
   // const spinnerQuery = document.querySelector('[class="ooui-spinner oui-spinner_m"]');
   const containerQuery = '[id="domain-table-other-extensions-domains"]';

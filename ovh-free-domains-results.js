@@ -1,33 +1,32 @@
 // Enter the page: https://www.ovh.pl/order/webcloud/?#/webCloud/domain
 // Copy the code below and paste it in the browser's console.
-// Run the code by typing in the console: let csv = await getCsvContent('test.com')
+// Run the code by typing in the console: let csv = await getCsvContent('domain-name.com')
 
 const getCsvContent = (domain) => {
-  //TODO: Sometimes it catches two buttons – find the first of them
   const domainFieldQuery = 'textarea[class^="bar-field__input"]';
   const searchButtonQuery = 'button[class="oui-button oui-button_l oui-button_primary"]';
   const showMoreQuery = 'button[class="oui-button oui-button_icon-right  oui-button_link"]';
   // const spinnerQuery = document.querySelector('[class="ooui-spinner oui-spinner_m"]');
   const containerQuery = '[id="domain-table-other-extensions-domains"]';
 
+  const selectNode = (query) => document.querySelector(query);
+
+  const delayed = (callback, delay = 10) => new Promise((res, rej) => setTimeout(() => {
+    const result = callback();
+    res(result);
+  }, delay));
+
   let clicks = {
     successful: 0,
     unsuccessful: 0,
-  };
+  };    
   let clicked = false;
   let prevShowMore;
   let nextShowMore;
 
-  const selectNode = (query) => document.querySelector(query);
-
   const setDomainQuery = async (domain) => {
     let domainField = selectNode(domainFieldQuery);
     let searchButton = selectNode(searchButtonQuery);
-
-    const delayed = (clbck) => new Promise((res, rej) => setTimeout(() => {
-      clbck();
-      res();
-    }, 10));
 
     domainField.value = domain;
     // A delay is needed to make dispatchEvent properly work
@@ -35,10 +34,14 @@ const getCsvContent = (domain) => {
     await delayed(() => searchButton.click());
   };
 
-  const clicking = () => new Promise((res, rej) => {
+  const clicking = () => new Promise(async (res, rej) => {
+    // A delay is here so 'container' is found when it's there already
+    const container = await delayed(() => selectNode(containerQuery), 1000);
+    const showMoreContainer = container.closest('div').parentElement;
+
     const clickButton = () => {
       setTimeout(() => {
-        nextShowMore = selectNode(showMoreQuery);
+        nextShowMore = showMoreContainer.querySelector(showMoreQuery);
         if (nextShowMore) {
           if (clicked && prevShowMore === nextShowMore) {
             const minutes = parseInt((clicks.successful + clicks.unsuccessful) / 60);
@@ -47,7 +50,7 @@ const getCsvContent = (domain) => {
             res(true);
             return;
           }
-          prevShowMore = selectNode(showMoreQuery);
+          prevShowMore = showMoreContainer.querySelector(showMoreQuery);
           prevShowMore.click();
           clicks.successful++;
           clicked = true;
@@ -59,13 +62,13 @@ const getCsvContent = (domain) => {
         }
       }, 1000);
     };
+
     clickButton();
   });
 
   const getAllResults = () => {
     const container = selectNode(containerQuery);
     const rows = container.querySelectorAll('tr');
-    
     let results = [];
     
     for (const tr of rows) {

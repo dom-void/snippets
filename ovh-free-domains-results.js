@@ -2,7 +2,7 @@
 // Copy the code below and paste it in the browser's console.
 // Run the code by typing in the console: let csv = await getCsvContent('domain-name.com')
 
-const getCsvContent = (domain) => {
+const getCsvContent = (domain, only2Letters = false) => {
   const domainFieldQuery = 'textarea[class^="bar-field__input"]';
   const searchButtonQuery = 'button[class="oui-button oui-button_l oui-button_primary"]';
   const showMoreQuery = 'button[class="oui-button oui-button_icon-right  oui-button_link"]';
@@ -79,20 +79,23 @@ const getCsvContent = (domain) => {
         price = price.innerText;
         let next = tr.querySelector('small.text-right');
         next = next ? next.innerText : '';
-        results.push(
-          [
-            domain,
-            price
-              .replace('zł', '')
-              .replaceAll(' ', '')
-              .trim(),
-            next
-              .replace('następnie', '')
-              .replace('zł/rok', '')
-              .replace(' ', '')
-              .trim()
-          ]
-        );
+        const domainSections = domain.split('.');
+        if ((only2Letters && (domainSections.length === 2 && domainSections[1].length <= 2)) || !only2Letters) {
+          results.push(
+            [
+              domain,
+              price
+                .replace('zł', '')
+                .replaceAll(' ', '')
+                .trim(),
+              next
+                .replace('następnie', '')
+                .replace('zł/rok', '')
+                .replace(' ', '')
+                .trim()
+            ]
+          );
+        }
       }
     }
     
